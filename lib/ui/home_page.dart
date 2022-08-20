@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provide_exercise/ui/contact_page.dart';
 import 'package:provide_exercise/ui/gallery_page.dart';
 import 'package:provide_exercise/ui/news_page.dart';
 import 'package:provide_exercise/ui/todo_page.dart';
 import 'package:provide_exercise/utils/constants.dart';
+
+import '../utils/notification.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
   final List<Widget> _bottomNavPages = <Widget>[
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: mainClr,
       body: PageView(
         controller: _pageController,
-         children: _bottomNavPages,
+        children: _bottomNavPages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

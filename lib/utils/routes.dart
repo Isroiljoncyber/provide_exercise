@@ -6,6 +6,8 @@ import 'package:provide_exercise/ui/news_detailed_page.dart';
 import 'package:provide_exercise/ui/personal_page.dart';
 import 'package:provide_exercise/ui/photos_page.dart';
 
+import 'constants.dart';
+
 class Routes {
   static const homePage = "/home";
   static const newsDetailedPage = "/home/newsDetails";
@@ -13,6 +15,7 @@ class Routes {
   static const photosPage = "/home/photos";
   static const personalPage = "/home/personal";
   static const googleMapPage = "/home/personal/googleMapPage";
+  static const notificationMapPage = "/home/notification";
 
   static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
     try {

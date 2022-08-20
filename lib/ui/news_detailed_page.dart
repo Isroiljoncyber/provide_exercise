@@ -7,13 +7,17 @@ import 'package:provide_exercise/ui/widgets/shimmerItems/news_detailed_shimmer_i
 import 'package:provide_exercise/utils/constants.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/notification.dart';
+
 class NewsDetailedPage extends StatelessWidget {
-  const NewsDetailedPage(this._newsModel, {Key? key}) : super(key: key);
+  NewsDetailedPage(this._newsModel, {Key? key}) : super(key: key);
 
   final NewsModel _newsModel;
+  final Notifications _notifications =  Notifications();
 
   @override
   Widget build(BuildContext context) {
+    _notifications.pushNotification(_newsModel);
     return Scaffold(
       backgroundColor: bgClr2,
       appBar: AppBar(
