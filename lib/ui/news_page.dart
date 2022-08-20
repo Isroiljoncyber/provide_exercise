@@ -8,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({Key? key}) : super(key: key);
+  final String tag = "news";
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +24,18 @@ class NewsPage extends StatelessWidget {
       ),
       body: Consumer<ViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.listNews.isEmpty) {
-            viewModel.getNews();
+          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
+            viewModel.getNews(tag);
           }
           return ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount:
                 viewModel.listNews.isEmpty ? 10 : viewModel.listNews.length,
             itemBuilder: (context, index) {
-              if (viewModel.listNews.isEmpty) {
-                return const NewsShimmerItem();
-              } else {
+              if (viewModel.getStatus(tag) == StatusModel.isSuccessful) {
                 return NewsItem(viewModel.listNews[index]);
+              } else {
+                return const NewsShimmerItem();
               }
             },
           );

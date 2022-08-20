@@ -5,9 +5,12 @@ import 'package:http/http.dart';
 import 'package:provide_exercise/domain/models/albums_model.dart';
 import 'package:provide_exercise/domain/models/contacts_model.dart';
 import 'package:provide_exercise/domain/models/news_model.dart';
+import 'package:provide_exercise/domain/models/photos_model.dart';
 import 'package:provide_exercise/domain/models/todos_model.dart';
 import 'package:provide_exercise/domain/repos/network_repository.dart';
 import 'package:provide_exercise/utils/constants.dart';
+
+import '../models/news_detailed_model.dart';
 
 class NetworkRepoImpl implements NetworkRepository {
   @override
@@ -82,6 +85,46 @@ class NetworkRepoImpl implements NetworkRepository {
         }
       }
       return contactsList;
+    } on SocketException {
+      print("error Socket");
+    } catch (e) {
+      print("error Socket");
+    }
+    return [];
+  }
+
+  @override
+  Future<List<NewsDetailedModel>> getNewsComments() async {
+    try {
+      List<NewsDetailedModel> commentsList = [];
+      var response = await get(Uri.parse("${baseUrl}comments"));
+      if (response.statusCode == 200) {
+        for (var item in jsonDecode(response.body)) {
+          var model = NewsDetailedModel.fromJson(item);
+          commentsList.add(model);
+        }
+      }
+      return commentsList;
+    } on SocketException {
+      print("error Socket");
+    } catch (e) {
+      print("error Socket");
+    }
+    return [];
+  }
+
+  @override
+  Future<List<PhotosModel>> getPhotos() async {
+    try {
+      List<PhotosModel> photosList = [];
+      var response = await get(Uri.parse("${baseUrl}photos"));
+      if (response.statusCode == 200) {
+        for (var item in jsonDecode(response.body)) {
+          var model = PhotosModel.fromJson(item);
+          photosList.add(model);
+        }
+      }
+      return photosList;
     } on SocketException {
       print("error Socket");
     } catch (e) {

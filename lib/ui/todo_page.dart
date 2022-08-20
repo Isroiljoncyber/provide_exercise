@@ -12,6 +12,7 @@ import 'package:shimmer/shimmer.dart';
 
 class TodosPage extends StatelessWidget {
   const TodosPage({Key? key}) : super(key: key);
+  final String tag = 'todo';
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +28,8 @@ class TodosPage extends StatelessWidget {
       ),
       body: Consumer<ViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.listTodos.isEmpty) {
-            viewModel.getTodos();
+          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
+            viewModel.getTodos(tag);
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -36,10 +37,10 @@ class TodosPage extends StatelessWidget {
             itemCount:
                 viewModel.listTodos.isEmpty ? 20 : viewModel.listTodos.length,
             itemBuilder: (context, index) {
-              if (viewModel.listTodos.isEmpty) {
-                return const TodosShimmerItem();
-              } else {
+              if (viewModel.getStatus(tag) == StatusModel.isSuccessful) {
                 return TodosItem(viewModel.listTodos[index]);
+              } else {
+                return const TodosShimmerItem();
               }
             },
           );

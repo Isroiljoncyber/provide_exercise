@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provide_exercise/utils/constants.dart';
 import '../../domain/models/contacts_model.dart';
+import '../../utils/routes.dart';
 
 class ContactItem extends StatelessWidget {
   const ContactItem(this._model, {Key? key}) : super(key: key);
@@ -11,7 +12,10 @@ class ContactItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, Routes.personalPage,
+              arguments: {'model': _model});
+        },
         child: Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20),
           child: Row(

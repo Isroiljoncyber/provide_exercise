@@ -7,6 +7,7 @@ Color itemClr = const Color(0xff272344);
 Color bgClr = const Color(0xff010101);
 Color bgClr2 = const Color(0xff190b27);
 Color checkBoxClr = const Color(0xff9587da);
+Color iconBgClr = const Color(0xff1f1e2c);
 
 TextStyle optionStyle =
     const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);

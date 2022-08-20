@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 
 class GalleryPage extends StatelessWidget {
   const GalleryPage({Key? key}) : super(key: key);
+  final String tag = "gallery";
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +26,8 @@ class GalleryPage extends StatelessWidget {
       ),
       body: Consumer<ViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.listAlbums.isEmpty) {
-            viewModel.getAlbums();
+          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
+            viewModel.getAlbums(tag);
           }
           return GridView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -39,10 +40,10 @@ class GalleryPage extends StatelessWidget {
             itemCount:
                 viewModel.listAlbums.isEmpty ? 10 : viewModel.listAlbums.length,
             itemBuilder: (context, index) {
-              if (viewModel.listAlbums.isEmpty) {
-                return const AlbumsShimmerItem();
-              } else {
+              if (viewModel.getStatus(tag) == StatusModel.isSuccessful) {
                 return AlbumsItem(viewModel.listAlbums[index]);
+              } else {
+                return const AlbumsShimmerItem();
               }
             },
           );

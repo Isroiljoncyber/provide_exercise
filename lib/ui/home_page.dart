@@ -15,7 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   int _selectedIndex = 0;
-  static final List<Widget> _bottomNavPages = <Widget>[
+  final PageController _pageController = PageController();
+  final List<Widget> _bottomNavPages = <Widget>[
     const NewsPage(),
     const GalleryPage(),
     const TodosPage(),
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
+    _pageController.jumpToPage(index);
     setState(() {
       _selectedIndex = index;
     });
@@ -32,7 +34,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainClr,
-      body: _bottomNavPages[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+         children: _bottomNavPages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
