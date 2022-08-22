@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provide_exercise/domain/blocs/newsDetailedBloc//news_detailed_bloc.dart';
 import 'package:provide_exercise/domain/models/news_model.dart';
-import 'package:provide_exercise/domain/providers/view_model.dart';
 import 'package:provide_exercise/ui/widgets/bottomNav.dart';
 import 'package:provide_exercise/ui/widgets/news_detailed_item.dart';
 import 'package:provide_exercise/ui/widgets/shimmerItems/news_detailed_shimmer_item.dart';
 import 'package:provide_exercise/utils/constants.dart';
-import 'package:provider/provider.dart';
 
+import '../domain/models/news_detailed_model.dart';
 import '../utils/notification.dart';
 
 class NewsDetailedPage extends StatelessWidget {
   NewsDetailedPage(this._newsModel, {Key? key}) : super(key: key);
 
   final NewsModel _newsModel;
-  final Notifications _notifications =  Notifications();
+  final Notifications _notifications = Notifications();
+  late List<NewsDetailedModel> listNewsDetails = [];
 
   @override
   Widget build(BuildContext context) {
-    _notifications.pushNotification(_newsModel);
+    context
+        .read<NewsDetailedBloc>()
+        .add(NewsEventGetMoreDetail(_newsModel.id!));
+
+    // _notifications.pushNotification(_newsModel);
     return Scaffold(
       backgroundColor: bgClr2,
       appBar: AppBar(
@@ -58,32 +64,43 @@ class NewsDetailedPage extends StatelessWidget {
                           color: Colors.white),
                     ),
                   ),
-                  Consumer<ViewModel>(
-                    builder: (context, viewModel, child) {
-                      if (viewModel.listNewsDetailed.isEmpty ||
-                          viewModel.listNewsDetailed[0].postId !=
-                              _newsModel.userId) {
-                        viewModel.getNewsDetailed(_newsModel.userId!);
-                      }
-                      return Flexible(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: 2,
-                          itemBuilder: (context, index) {
-                            if (viewModel.listNewsDetailed.isNotEmpty) {
-                              return NewsDetailedItem(
-                                  viewModel.listNewsDetailed[index]);
-                            } else {
-                              return const NewsDetailedShimmerItem();
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  )
+                  BlocBuilder<NewsDetailedBloc, NewsDetailedState>(
+                      builder: (context, state) {
+                        if (state is NewsDetailedStateOnCompleted) {
+                          listNewsDetails.addAll(state.listNewsDetails);
+                          return Flexible(
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: 2,
+                              itemBuilder: (context, index) {
+                                return NewsDetailedItem(
+                                    state.listNewsDetails[index]);
+                              },
+                            ),
+                          );
+                        } else if (state is NewsDetailedStateOnFiled) {
+                          return const Expanded(
+                            child: Center(
+                              child: Text("Error"),
+                            ),
+                          );
+                        } else if (state is NewsDetailedStateInProgress) {
+                          return Flexible(
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: 2,
+                              itemBuilder: (context, index) {
+                                return const NewsDetailedShimmerItem();
+                              },
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }),
                 ],
               )),
-          BottomNav(_newsModel),
+          BottomNav(_newsModel, listNewsDetails: listNewsDetails,),
         ],
       ),
     );

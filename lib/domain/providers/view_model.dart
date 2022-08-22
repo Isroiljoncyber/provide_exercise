@@ -43,21 +43,21 @@ class ViewModel extends ChangeNotifier {
     });
   }
 
-  Future getNews(String tag) async {
-    try {
-      state[tag] = StatusModel.isBusy;
-      if (await checkInternetConnection()) {
-        listNews.addAll(await _networkRepoImpl.getPosts());
-        state[tag] = StatusModel.isSuccessful;
-        Future.delayed(const Duration(seconds: 1), () => notifyListeners());
-        cleanState(tag);
-      }
-    } catch (e) {
-      state[tag] = StatusModel.isError;
-      notifyListeners();
-      debugPrint(e.toString());
-    }
-  }
+  // Future getNews(String tag) async {
+  //   try {
+  //     state[tag] = StatusModel.isBusy;
+  //     if (await checkInternetConnection()) {
+  //       listNews.addAll(await _networkRepoImpl.getPosts());
+  //       state[tag] = StatusModel.isSuccessful;
+  //       Future.delayed(const Duration(seconds: 1), () => notifyListeners());
+  //       cleanState(tag);
+  //     }
+  //   } catch (e) {
+  //     state[tag] = StatusModel.isError;
+  //     notifyListeners();
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   Future getAlbums(String tag) async {
     try {
@@ -124,7 +124,7 @@ class ViewModel extends ChangeNotifier {
     }
   }
 
-  Future getPhotos(String tag,int id) async {
+  Future getPhotos(String tag, int id) async {
     try {
       state[tag] = StatusModel.isBusy;
       listPhotos = [];

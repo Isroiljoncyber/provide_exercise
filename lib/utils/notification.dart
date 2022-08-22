@@ -35,7 +35,7 @@ class Notifications {
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      1,
       'Post Id: ${model.userId}',
       'post title: ${model.title}',
       platformChannelSpecifics,

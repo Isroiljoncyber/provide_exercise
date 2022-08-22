@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provide_exercise/domain/models/contacts_model.dart';
-import 'package:provide_exercise/domain/providers/view_model.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/contact_shimmer_item.dart';
 import 'package:provide_exercise/utils/constants.dart';
 import 'package:provide_exercise/utils/routes.dart';
-import 'package:provider/provider.dart';
 
-import 'widgets/contact_item.dart';
 
 class PersonalPage extends StatelessWidget {
   const PersonalPage(this._model, {Key? key}) : super(key: key);

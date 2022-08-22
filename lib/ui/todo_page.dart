@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provide_exercise/domain/providers/view_model.dart';
-import 'package:provide_exercise/ui/widgets/alboms_item.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/alboms_shimmer_item.dart';
-import 'package:provide_exercise/ui/widgets/news_item.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/news_shimmer_item.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provide_exercise/domain/blocs/todosBloc/todos_bloc.dart';
 import 'package:provide_exercise/ui/widgets/todos_item.dart';
 import 'package:provide_exercise/ui/widgets/shimmerItems/todos_shimmer_item.dart';
 import 'package:provide_exercise/utils/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class TodosPage extends StatelessWidget {
   const TodosPage({Key? key}) : super(key: key);
@@ -16,6 +12,7 @@ class TodosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<TodosBloc>().add(GetTodosEvent());
     return Scaffold(
       backgroundColor: bgClr2,
       appBar: AppBar(
@@ -26,26 +23,33 @@ class TodosPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
       ),
-      body: Consumer<ViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
-            viewModel.getTodos(tag);
-          }
+      body: BlocBuilder<TodosBloc, TodosState>(builder: (context, state) {
+        if (state is TodosStateOnCompleted) {
           return ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             physics: const BouncingScrollPhysics(),
-            itemCount:
-                viewModel.listTodos.isEmpty ? 20 : viewModel.listTodos.length,
+            itemCount: state.listTodos.length,
             itemBuilder: (context, index) {
-              if (viewModel.getStatus(tag) == StatusModel.isSuccessful) {
-                return TodosItem(viewModel.listTodos[index]);
-              } else {
-                return const TodosShimmerItem();
-              }
+              return TodosItem(state.listTodos[index]);
             },
           );
-        },
-      ),
+        } else if (state is TodosStateInProgress) {
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            physics: const BouncingScrollPhysics(),
+            itemCount: 20,
+            itemBuilder: (context, index) {
+              return const TodosShimmerItem();
+            },
+          );
+        } else if (state is TodosStateOnFiled) {
+          return Center(
+            child: Text(state.message),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      }),
     );
   }
 }

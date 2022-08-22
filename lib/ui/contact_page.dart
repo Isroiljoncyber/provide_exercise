@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provide_exercise/domain/providers/view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provide_exercise/domain/blocs/profileCubit/profile_cubit.dart';
 import 'package:provide_exercise/ui/widgets/shimmerItems/contact_shimmer_item.dart';
 import 'package:provide_exercise/utils/constants.dart';
-import 'package:provider/provider.dart';
 
 import 'widgets/contact_item.dart';
 
 class ContactPage extends StatelessWidget {
   const ContactPage({Key? key}) : super(key: key);
-  final String tag = 'contact';
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileCubit>().getContactsCubit();
     return Scaffold(
       backgroundColor: bgClr2,
       appBar: AppBar(
@@ -22,25 +22,33 @@ class ContactPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
       ),
-      body: Consumer<ViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
-            viewModel.getContacts(tag);
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            physics: const BouncingScrollPhysics(),
-            itemCount: viewModel.listContact.isEmpty
-                ? 10
-                : viewModel.listContact.length,
-            itemBuilder: (context, index) {
-              if (viewModel.getStatus(tag) == StatusModel.isSuccessful) {
-                return ContactItem(viewModel.listContact[index]);
-              } else {
+      body: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          if (state is ProfileStateOnCompleted) {
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              physics: const BouncingScrollPhysics(),
+              itemCount: state.listContacts.length,
+              itemBuilder: (context, index) {
+                return ContactItem(state.listContacts[index]);
+              },
+            );
+          } else if (state is ProfileStateInProgress) {
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              physics: const BouncingScrollPhysics(),
+              itemCount: 20,
+              itemBuilder: (context, index) {
                 return const ContactShimmerItem();
-              }
-            },
-          );
+              },
+            );
+          } else if (state is ProfileStateOnFiled) {
+            return Center(
+              child: Text("Error ${state.message}"),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
         },
       ),
     );

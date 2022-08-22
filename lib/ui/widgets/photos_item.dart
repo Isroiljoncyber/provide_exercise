@@ -17,9 +17,7 @@ class PhotosItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: _model.url!,
-      fit: BoxFit.fill,
-    );
+    return Image(image: CachedNetworkImageProvider(_model.url!));
+    // const CircularProgressIndicator();
   }
 }

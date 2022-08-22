@@ -17,9 +17,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final PageController _pageController = PageController();
+  final PageController _pageController = PageController(keepPage: false);
   final List<Widget> _bottomNavPages = <Widget>[
-    const NewsPage(),
+    NewsPage(),
     const GalleryPage(),
     const TodosPage(),
     const ContactPage()

@@ -6,8 +6,6 @@ import 'package:provide_exercise/ui/news_detailed_page.dart';
 import 'package:provide_exercise/ui/personal_page.dart';
 import 'package:provide_exercise/ui/photos_page.dart';
 
-import 'constants.dart';
-
 class Routes {
   static const homePage = "/home";
   static const newsDetailedPage = "/home/newsDetails";
@@ -32,7 +30,7 @@ class Routes {
         case newsDetailedResultPage:
           return MaterialPageRoute(
               builder: (context) =>
-                  NewsDetailedMorePage(args?['newsModel'] ?? ''));
+                  NewsDetailedMorePage(args?['newsModel'], args?['detailModel']));
         case photosPage:
           return MaterialPageRoute(
               builder: (context) => PhotosPage(args?['model'] ?? ''));

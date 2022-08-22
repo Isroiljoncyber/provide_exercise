@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provide_exercise/domain/blocs/photosBloc/photos_bloc.dart';
 import 'package:provide_exercise/domain/providers/view_model.dart';
-import 'package:provide_exercise/ui/widgets/alboms_item.dart';
 import 'package:provide_exercise/ui/widgets/photos_item.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/alboms_shimmer_item.dart';
-import 'package:provide_exercise/ui/widgets/news_item.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/news_shimmer_item.dart';
 import 'package:provide_exercise/utils/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../domain/models/albums_model.dart';
 
 class PhotosPage extends StatelessWidget {
   const PhotosPage(this._model, {Key? key}) : super(key: key);
-  final String tag = "photos";
 
   final AlbumsModel _model;
 
   @override
   Widget build(BuildContext context) {
+    context.read<PhotosBloc>().add(GetPhotosEvent(_model.userId!));
     return Scaffold(
       backgroundColor: bgClr,
       appBar: AppBar(
@@ -31,30 +28,35 @@ class PhotosPage extends StatelessWidget {
               const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
       ),
-      body: Consumer<ViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.getStatus(tag) != StatusModel.isSuccessful) {
-            viewModel.getPhotos(tag, _model.userId!);
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return GridView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              physics: const BouncingScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: viewModel.listPhotos.isEmpty
-                  ? 20
-                  : viewModel.listPhotos.length,
-              itemBuilder: (context, index) {
-                return PhotosItem(viewModel.listPhotos[index]);
-              },
-            );
-          }
-        },
-      ),
+      body: BlocBuilder<PhotosBloc, PhotosState>(builder: (context, state) {
+        if (state is PhotoStateOnCompleted) {
+          return GridView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            physics: const BouncingScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: state.listPhoto.length,
+            itemBuilder: (context, index) {
+              return PhotosItem(state.listPhoto[index]);
+            },
+          );
+        } else if (state is PhotoStateInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          );
+        } else if (state is PhotoStateOnFiled) {
+          return const Center(
+            child: Text("Error"),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      }),
     );
   }
 }

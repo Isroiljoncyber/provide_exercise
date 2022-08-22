@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/models/news_detailed_model.dart';
 import '../../domain/models/news_model.dart';
 import '../../utils/routes.dart';
 
 class BottomNav extends StatelessWidget {
-  const BottomNav(this._newsModel, {Key? key}) : super(key: key);
+  const BottomNav(this._newsModel, {Key? key, required this.listNewsDetails}) : super(key: key);
   final NewsModel _newsModel;
+  final List<NewsDetailedModel> listNewsDetails;
+
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,7 @@ class BottomNav extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, Routes.newsDetailedResultPage,
-              arguments: {'newsModel': _newsModel});
+              arguments: {'newsModel': _newsModel,'detailModel': listNewsDetails });
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),

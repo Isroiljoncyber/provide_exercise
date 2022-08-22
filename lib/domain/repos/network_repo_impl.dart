@@ -13,6 +13,7 @@ import 'package:provide_exercise/utils/constants.dart';
 import '../models/news_detailed_model.dart';
 
 class NetworkRepoImpl implements NetworkRepository {
+
   @override
   Future<List<NewsModel>> getPosts() async {
     try {

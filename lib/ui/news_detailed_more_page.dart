@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:provide_exercise/domain/models/news_model.dart';
-import 'package:provide_exercise/domain/providers/view_model.dart';
-import 'package:provide_exercise/ui/widgets/bottomNav.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provide_exercise/domain/blocs/newsBloc/news_bloc.dart';
 import 'package:provide_exercise/ui/widgets/news_detailed_item.dart';
-import 'package:provide_exercise/ui/widgets/shimmerItems/news_detailed_shimmer_item.dart';
-import 'package:provide_exercise/utils/constants.dart';
-import 'package:provider/provider.dart';
+
+import '../domain/blocs/newsDetailedBloc/news_detailed_bloc.dart';
+import '../domain/models/news_detailed_model.dart';
+import '../domain/models/news_model.dart';
+import '../utils/constants.dart';
 
 class NewsDetailedMorePage extends StatelessWidget {
-  const NewsDetailedMorePage(this._newsModel, {Key? key}) : super(key: key);
+  const NewsDetailedMorePage(this._newsModel, this.listNewsDetails, {Key? key})
+      : super(key: key);
 
   final NewsModel _newsModel;
+  final List<NewsDetailedModel> listNewsDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +35,14 @@ class NewsDetailedMorePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: Consumer<ViewModel>(
-          builder: (context, viewModel, child) {
-            return Flexible(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: viewModel.listNewsDetailed.length,
-                itemBuilder: (context, index) {
-                  if (viewModel.listNewsDetailed.isNotEmpty) {
-                    return NewsDetailedItem(viewModel.listNewsDetailed[index]);
-                  } else {
-                    return const NewsDetailedShimmerItem();
-                  }
-                },
-              ),
-            );
-          },
+        child: Flexible(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: listNewsDetails.length,
+            itemBuilder: (context, index) {
+              return NewsDetailedItem(listNewsDetails[index]);
+            },
+          ),
         ),
       ),
     );
